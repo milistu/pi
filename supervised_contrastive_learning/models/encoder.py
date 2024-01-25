@@ -5,10 +5,14 @@ import torchvision.models as models
 
 class Encoder(nn.Module):
     def __init__(
-        self, projection_layer: int = 128, weights: models.Weights = None
+        self,
+        projection_layer: int = 128,
+        training: bool = False,
+        weights: models.Weights = None,
     ) -> None:
         super(Encoder, self).__init__()
 
+        self.training = training
         self.backbone = models.resnet50(weights=weights)
         self.backbone = nn.Sequential(*(list(self.backbone.children())[:-1]))
         #  multi-layer perceptron
@@ -17,7 +21,8 @@ class Encoder(nn.Module):
     def forward(self, x) -> torch.Tensor:
         x = self.backbone(x)
         x = torch.flatten(x, start_dim=1)
-        x = self.mlp(x)
+        if self.training:
+            x = self.mlp(x)
         return x
 
 
