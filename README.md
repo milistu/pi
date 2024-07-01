@@ -1,2 +1,2 @@
 # pi
-Papers Implementation
+Paper Implementations
